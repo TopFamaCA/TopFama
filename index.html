@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>TopFama CA 🔥 | Red Social & Casting VIP</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    body { background-color: #0b0b0e; color: #ffffff; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+    .gradiente-principal { background: linear-gradient(135deg, #f50057 0%, #ff6d00 100%); }
+    .portada-bg { background: linear-gradient(rgba(0,0,0,0.5), rgba(11,11,14,1)), url('https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?q=80&w=1000&auto=format&fit=crop') center/cover; }
+    .nav-item.active { color: #f50057; }
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-thumb { background: #222; border-radius: 4px; }
+  </style>
+</head>
+<body class="pb-20">
+
+  <!-- CABECERA -->
+  <header class="sticky top-0 z-40 bg-[#121216]/90 backdrop-blur-md border-b border-gray-800/80 px-4 py-2.5 flex justify-between items-center max-w-md mx-auto">
+    <div class="flex items-center gap-2">
+      <div class="w-8 h-8 rounded-full gradiente-principal flex items-center justify-center font-black text-white shadow-md">TF</div>
+      <h1 class="text-lg font-black tracking-wider bg-gradient-to-r from-pink-500 to-orange-400 bg-clip-text text-transparent">TOPFAMA CA</h1>
+    </div>
+    <div id="user-header" class="hidden items-center gap-3">
+      <span id="header-username" class="text-xs font-bold text-gray-300"></span>
+      <button onclick="cerrarSesion()" class="text-xs bg-gray-800 hover:bg-red-600 px-2.5 py-1.5 rounded-lg text-gray-300 transition">
+        <i class="fa-solid fa-right-from-bracket"></i>
+      </button>
+    </div>
+  </header>
+
+  <!-- CONTENEDOR PRINCIPAL -->
+  <main class="max-w-md mx-auto p-3">
+
+    <!-- 1. PORTADA E INTRODUCCIÓN -->
+    <section id="screen-intro" class="mt-2 rounded-3xl portada-bg p-6 flex flex-col justify-between min-h-[75vh] border border-gray-800 shadow-2xl">
+      <div class="text-right">
+        <span class="bg-black/50 backdrop-blur-md text-pink-400 text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-widest border border-pink-500/30">Ciego de Ávila VIP</span>
+      </div>
+      <div class="space-y-4 my-auto">
+        <div class="w-16 h-16 rounded-2xl gradiente-principal flex items-center justify-center text-3xl font-black text-white shadow-lg shadow-pink-500/30 mb-2">🔥</div>
+        <h2 class="text-3xl font-black leading-tight">Conecta, compite y haz amigos en <span class="text-pink-500">TopFama</span></h2>
+        <p class="text-xs text-gray-300 leading-relaxed">Comparte momentos en el muro, participa en el casting y envía solicitudes de amistad para chatear en privado.</p>
+      </div>
+      <div>
+        <button onclick="mostrarReglas()" class="w-full gradiente-principal py-3.5 rounded-2xl font-black text-sm shadow-xl flex items-center justify-center gap-2">
+          <span>Comenzar Ahora</span> <i class="fa-solid fa-arrow-right"></i>
+        </button>
+      </div>
+    </section>
+
+    <!-- 2. REGLAS Y REQUISITOS -->
+    <section id="screen-reglas" class="hidden mt-4 bg-[#141418] p-6 rounded-3xl border border-gray-800 space-y-4 shadow-xl">
+      <div class="text-center">
+        <div class="w-12 h-12 rounded-full bg-pink-500/20 text-pink-500 flex items-center justify-center mx-auto mb-2 text-xl"><i class="fa-solid fa-shield-halved"></i></div>
+        <h3 class="text-lg font-extrabold">Normas de la Comunidad</h3>
+        <p class="text-xs text-gray-400">Ambiente seguro, verificado y respetuoso.</p>
+      </div>
+      <div class="space-y-2.5 text-xs text-gray-300 bg-black/40 p-3.5 rounded-2xl border border-gray-800">
+        <div class="flex gap-2.5 items-start"><i class="fa-solid fa-circle-check text-pink-500 mt-0.5"></i><p><b>Mayor de 18 años:</b> Requisito indispensable para citas y casting.</p></div>
+        <div class="flex gap-2.5 items-start"><i class="fa-solid fa-circle-check text-pink-500 mt-0.5"></i><p><b>Perfil Real:</b> Sube fotos y portadas auténticas.</p></div>
+        <div class="flex gap-2.5 items-start"><i class="fa-solid fa-circle-check text-pink-500 mt-0.5"></i><p><b>Amistad y Respeto:</b> Necesitas una solicitud de amistad aceptada para iniciar chats privados.</p></div>
+      </div>
+      <label class="flex items-center gap-2.5 text-xs text-gray-200 bg-gray-900/80 p-3 rounded-xl border border-gray-800 cursor-pointer">
+        <input type="checkbox" id="check-reglas" class="accent-pink-500 w-4 h-4">
+        <span>Acepto las normas y requisitos de TopFama CA.</span>
+      </label>
+      <button onclick="aceptarReglas()" class="w-full gradiente-principal py-3 rounded-xl font-bold text-sm shadow-lg">Continuar al Registro</button>
+    </section>
+
+    <!-- 3. LOGIN / REGISTRO -->
+    <section id="auth-screen" class="hidden mt-6 bg-[#141418] p-6 rounded-3xl border border-gray-800 shadow-xl">
+      <div class="flex mb-6 bg-black/50 rounded-xl p-1 border border-gray-800">
+        <button id="tab-login" onclick="cambiarTabAuth('login')" class="w-1/2 py-2 rounded-lg text-xs font-bold gradiente-principal text-white">Iniciar Sesión</button>
+        <button id="tab-register" onclick="cambiarTabAuth('register')" class="w-1/2 py-2 rounded-lg text-xs font-bold text-gray-400">Crear Cuenta</button>
+      </div>
+
+      <div id="form-login" class="space-y-3.5">
+        <input type="text" id="login-nombre" placeholder="Nombre de usuario" class="w-full bg-black/50 border border-gray-800 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-pink-500">
+        <input type="password" id="login-pass" placeholder="Contraseña" class="w-full bg-black/50 border border-gray-800 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-pink-500">
+        <button onclick="iniciarSesion()" class="w-full gradiente-principal py-3 rounded-xl font-bold text-xs shadow-lg">Entrar</button>
+      </div>
+
+      <div id="form-register" class="space-y-3.5 hidden">
+        <input type="text" id="reg-nombre" placeholder="Nombre de usuario único" class="w-full bg-black/50 border border-gray-800 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-pink-500">
+        <input type="password" id="reg-pass" placeholder="Contraseña" class="w-full bg-black/50 border border-gray-800 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-pink-500">
+        <div class="flex gap-2">
+          <input type="number" id="reg-edad" placeholder="Edad (Mín 18)" class="w-1/3 bg-black/50 border border-gray-800 rounded-xl px-3 py-3 text-xs focus:outline-none focus:border-pink-500">
+          <select id="reg-busca" class="w-2/3 bg-black/50 border border-gray-800 rounded-xl px-3 py-3 text-xs text-gray-300 focus:outline-none focus:border-pink-500">
+            <option value="Citas y Amistad">Busco: Citas y Amistad</option>
+            <option value="Participar en Casting">Busco: Ganar el Casting</option>
+            <option value="Solo Citas 🔥">Busco: Solo Citas 🔥</option>
+            <option value="Hacer Amigos">Busco: Hacer Amigos</option>
+          </select>
+        </div>
+        <input type="text" id="reg-bio" placeholder="Biografía corta..." class="w-full bg-black/50 border border-gray-800 rounded-xl px-4 py-3 text-xs focus:outline-none focus:border-pink-500">
+        <div>
+          <label class="block text-[11px] text-gray-400 mb-1 font-semibold">Foto de Perfil:</label>
+          <input type="file" id="reg-foto" accept="image/*" class="w-full text-xs text-gray-400 file:mr-3 file:py-2 file:px-3 file:rounded-xl file:border-0 file:text-[11px] file:font-bold file:bg-gray-800 file:text-pink-400">
+        </div>
+        <div>
+          <label class="block text-[11px] text-gray-400 mb-1 font-semibold">Foto de Portada (Fondo de perfil):</label>
+          <input type="file" id="reg-portada" accept="image/*" class="w-full text-xs text-gray-400 file:mr-3 file:py-2 file:px-3 file:rounded-xl file:border-0 file:text-[11px] file:font-bold file:bg-gray-800 file:text-orange-400">
+        </div>
+        <button id="btn-registrar" onclick="registrarUsuario()" class="w-full gradiente-principal py-3 rounded-xl font-bold text-xs shadow-lg mt-2">Registrarse</button>
+      </div>
+    </section>
+
+    <!-- SECCIÓN 1: MURO SOCIAL (FEED GLOBAL) -->
+    <section id="sec-muro" class="hidden space-y-4">
+      <div onclick="navegar('subir')" class="bg-[#141418] p-3.5 rounded-2xl border border-gray-800 flex items-center gap-3 cursor-pointer hover:border-pink-500/50 transition shadow-md">
+        <img id="feed-my-avatar" src="https://cdn-icons-png.flaticon.com/512/149/149071.png" class="w-10 h-10 rounded-full object-cover border border-pink-500">
+        <div class="bg-black/50 text-gray-400 text-xs py-2.5 px-4 rounded-full flex-1 border border-gray-800">¿Qué quieres publicar hoy?</div>
+        <i class="fa-solid fa-camera text-pink-500 text-lg pr-2"></i>
+      </div>
+      <div id="contenedor-publicaciones" class="space-y-5"></div>
+    </section>
+
+    <!-- SECCIÓN 2: CASTING Y RANKING -->
+    <section id="sec-casting" class="hidden space-y-4">
+      <div class="gradiente-principal p-4 rounded-2xl shadow-lg text-center">
+        <h2 class="text-base font-black"><i class="fa-solid fa-trophy mr-1"></i> RANKING CASTING</h2>
+        <p class="text-[11px] opacity-90">Vota por tus favoritos en tiempo real</p>
+      </div>
+      <div id="contenedor-ranking" class="space-y-3"></div>
+    </section>
+
+    <!-- SECCIÓN 3: SUBIR CONTENIDO -->
+    <section id="sec-subir" class="hidden bg-[#141418] p-5 rounded-3xl border border-gray-800 space-y-4 shadow-xl">
+      <h2 class="text-base font-bold"><i class="fa-solid fa-cloud-arrow-up text-pink-500 mr-2"></i>Nueva Publicación</h2>
+      <textarea id="post-desc" rows="3" placeholder="Escribe un pie de foto..." class="w-full bg-black/50 border border-gray-800 rounded-xl p-3 text-xs focus:outline-none focus:border-pink-500"></textarea>
+      <div class="border-2 border-dashed border-gray-800 rounded-2xl p-4 text-center bg-black/20">
+        <input type="file" id="post-file" accept="image/*,video/*" class="w-full text-xs text-gray-400 file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-pink-600 file:text-white">
+      </div>
+      <label class="flex items-center gap-2 text-xs text-gray-300 bg-black/40 p-3 rounded-xl border border-gray-800">
+        <input type="checkbox" id="post-casting" checked class="accent-pink-500 w-4 h-4">
+        <span>Participar en el <b>Casting 🔥</b></span>
+      </label>
+      <button id="btn-publicar" onclick="crearPublicacion()" class="w-full gradiente-principal py-3 rounded-xl font-bold text-xs shadow-lg">Publicar</button>
+    </section>
+
+    <!-- SECCIÓN 4: AMISTADES, EXPLORAR Y CHAT -->
+    <section id="sec-chat" class="hidden space-y-4">
+      <div class="flex bg-black/50 rounded-xl p-1 border border-gray-800 mb-3">
+        <button onclick="cambiarTabChat('amigos')" id="tab-amigos" class="w-1/2 py-2 rounded-lg text-xs font-bold gradiente-principal text-white">Mis Amigos & Chats</button>
+        <button onclick="cambiarTabChat('explorar')" id="tab-explorar" class="w-1/2 py-2 rounded-lg text-xs font-bold text-gray-400">Buscar Amigos 🔍</button>
+      </div>
+
+      <!-- Vista 1: Mis Amigos y Solicitudes Pendientes -->
+      <div id="vista-amigos" class="space-y-4">
+        <div id="contenedor-solicitudes"></div>
+        <h3 class="text-xs font-bold text-gray-400 px-1 uppercase tracking-wider">Mis Amigos (Chat Habilitado)</h3>
+        <div id="lista-amigos-chat" class="space-y-2"></div>
+      </div>
+
+      <!-- Vista 2: Explorar y Enviar Solicitudes -->
+      <div id="vista-explorar" class="hidden space-y-3">
+        <h3 class="text-xs font-bold text-gray-400 px-1 uppercase tracking-wider">Comunidad TopFama</h3>
+        <div id="lista-explorar" class="grid grid-cols-2 gap-3"></div>
+      </div>
+
+      <!-- Ventana de Chat Privado (Solo si son amigos) -->
+      <div id="ventana-chat" class="hidden bg-[#141418] rounded-3xl border border-gray-800 overflow-hidden flex flex-col h-[70vh] shadow-xl">
+        <div class="bg-black/60 p-3 flex items-center justify-between border-b border-gray-800">
+          <div class="flex items-center gap-2">
+            <button onclick="cerrarVentanaChat()" class="text-gray-400 hover:text-white px-2"><i class="fa-solid fa-arrow-left"></i></button>
+            <img id="chat-receptor-foto" src="" class="w-8 h-8 rounded-full object-cover border border-pink-500">
+            <div>
+              <h3 id="chat-receptor-nombre" class="text-xs font-bold leading-none"></h3>
+              <span class="text-[9px] text-green-400 font-semibold">Amigos Conectados</span>
+            </div>
+          </div>
+        </div>
+        <div id="caja-mensajes" class="flex-1 p-3 overflow-y-auto space-y-2 flex flex-col"></div>
+        <div class="p-3 bg-black/60 border-t border-gray-800 flex gap-2">
+          <input type="text" id="input-mensaje" placeholder="Escribe un mensaje..." class="flex-1 bg-black/50 border border-gray-800 rounded-xl px-3 py-2 text-xs focus:outline-none focus:border-pink-500">
+          <button onclick="enviarMensaje()" class="gradiente-principal px-4 rounded-xl text-white text-xs"><i class="fa-solid fa-paper-plane"></i></button>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECCIÓN 5: ADMIN -->
+    <section id="sec-admin" class="hidden space-y-4">
+      <div class="bg-red-600/20 border border-red-500/40 p-4 rounded-2xl text-center">
+        <h2 class="text-sm font-extrabold text-red-400"><i class="fa-solid fa-shield-halved mr-1"></i> PANEL ADMIN</h2>
+      </div>
+      <div class="bg-[#141418] p-4 rounded-2xl border border-gray-800 space-y-3">
+        <h3 class="text-xs font-bold border-b border-gray-800 pb-2">Usuarios</h3>
+        <div id="admin-lista-usuarios" class="space-y-2 max-h-40 overflow-y-auto"></div>
+      </div>
+      <div class="bg-[#141418] p-4 rounded-2xl border border-gray-800 space-y-3">
+        <h3 class="text-xs font-bold border-b border-gray-800 pb-2">Publicaciones</h3>
+        <div id="admin-lista-posts" class="space-y-2 max-h-40 overflow-y-auto"></div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- NAVEGACIÓN INFERIOR -->
+  <nav id="bottom-nav" class="hidden fixed bottom-0 left-0 right-0 bg-[#121216]/95 backdrop-blur-md border-t border-gray-800 z-50">
+    <div id="nav-container" class="max-w-md mx-auto flex justify-around py-2">
+      <button onclick="navegar('muro')" id="nav-muro" class="nav-item active flex flex-col items-center text-gray-400">
+        <i class="fa-solid fa-house text-base"></i>
+        <span class="text-[9px] mt-0.5">Muro</span>
+      </button>
+      <button onclick="navegar('casting')" id="nav-casting" class="nav-item flex flex-col items-center text-gray-400">
+        <i class="fa-solid fa-trophy text-base"></i>
+        <span class="text-[9px] mt-0.5">Casting</span>
+      </button>
+      <button onclick="navegar('subir')" id="nav-subir" class="nav-item flex flex-col items-center text-gray-400">
+        <div class="gradiente-principal w-9 h-9 rounded-full flex items-center justify-center text-white -mt-2 shadow-md border-2 border-[#0b0b0e]">
+          <i class="fa-solid fa-plus text-sm"></i>
+        </div>
+        <span class="text-[9px] mt-0.5">Subir</span>
+      </button>
+      <button onclick="navegar('chat')" id="nav-chat" class="nav-item flex flex-col items-center text-gray-400">
+        <i class="fa-solid fa-user-group text-base"></i>
+        <span class="text-[9px] mt-0.5">Amigos</span>
+      </button>
+    </div>
+  </nav>
+
+  <script>
+    const SUPABASE_URL = 'https://xsqdeufmeprfcexfuxml.supabase.co';
+    const SUPABASE_KEY = 'sb_publishable_tqnOwRFPyEYsQeH4C3NcvA_xmXrunDo';
+    const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+    let usuarioActual = JSON.parse(localStorage.getItem('topfama_user')) || null;
+    let chatReceptor = null;
+    let intervaloChat = null;
+    const ADMIN_USER = "Daemon";
+
+    window.onload = () => {
+      if (usuarioActual) mostrarApp();
+      else document.getElementById('screen-intro').classList.remove('hidden');
+    };
+
+    function mostrarReglas() {
+      document.getElementById('screen-intro').classList.add('hidden');
+      document.getElementById('screen-reglas').classList.remove('hidden');
+    }
+
+    function aceptarReglas() {
+      if (!document.getElementById('check-reglas').checked) return alert('Debes aceptar las normas para continuar.');
+      document.getElementById('screen-reglas').classList.add('hidden');
+      document.getElementById('auth-screen').classList.remove('hidden');
+    }
+
+    function cambiarTabAuth(tab) {
+      document.getElementById('form-login').classList.toggle('hidden', tab !== 'login');
+      document.getElementById('form-register').classList.toggle('hidden', tab !== 'register');
+      document.getElementById('tab-login').className = tab === 'login' ? 'w-1/2 py-2 rounded-lg text-xs font-bold gradiente-principal text-white' : 'w-1/2 py-2 rounded-lg text-xs font-bold text-gray-400';
+      document.getElementById('tab-register').className = tab === 'register' ? 'w-1/2 py-2 rounded-lg text-xs font-bold gradiente-principal text-white' : 'w-1/2 py-2 rounded-lg text-xs font-bold text-gray-400';
+    }
+
+    function cambiarTabChat(tab) {
+      document.getElementById('vista-amigos').classList.toggle('hidden', tab !== 'amigos');
+      document.getElementById('vista-explorar').classList.toggle('hidden', tab !== 'explorar');
+      document.getElementById('tab-amigos').className = tab === 'amigos' ? 'w-1/2 py-2 rounded-lg text-xs font-bold gradiente-principal text-white' : 'w-1/2 py-2 rounded-lg text-xs font-bold text-gray-400';
+      document.getElementById('tab-explorar').className = tab === 'explorar' ? 'w-1/2 py-2 rounded-lg text-xs font-bold gradiente-principal text-white' : 'w-1/2 py-2 rounded-lg text-xs font-bold text-gray-400';
+      if (tab === 'amigos') cargarAmigosYSolicitudes();
+      if (tab === 'explorar') cargarExplorar();
+    }
+
+    async function subirArchivoStorage(file) {
+      const ext = file.name.split('.').pop();
+      const fileName = `${Date.now()}_${Math.random().toString(36).substring(7)}.${ext}`;
+      const { data, error } = await db.storage.from('multimedia').upload(fileName, file);
+      if (error) throw error;
+      const { data: urlData } = db.storage.from('multimedia').getPublicUrl(fileName);
+      return urlData.publicUrl;
+    }
+
+    async function registrarUsuario() {
+      const nombre = document.getElementById('reg-nombre').value.trim();
+      const password = document.getElementById('reg-pass').value.trim();
+      const edad = parseInt(document.getElementById('reg-edad').value);
+      const busca = document.getElementById('reg-busca').value;
+      const bio = document.getElementById('reg-bio').value.trim() || '¡En TopFama CA!';
+      const fotoInput = document.getElementById('reg-foto').files[0];
+      const portadaInput = document.getElementById('reg-portada').files[0];
+
+      if (!nombre || !password || isNaN(edad)) return alert('Completa todos los campos.');
+      if (edad < 18) return alert('Debes ser mayor de 18 años.');
+      if (!fotoInput) return alert('La foto de perfil es obligatoria.');
+
+      try {
+        let foto_perfil = await subirArchivoStorage(fotoInput);
+        let foto_portada = portadaInput ? await subirArchivoStorage(portadaInput) : 'https://images.unsplash.com/photo-1550684848-fac1c5b4e853?q=80&w=1000';
+
+        const { data, error } = await db.from('perfiles').insert([{
+          nombre, password, edad, busca, bio, foto_perfil, foto_portada
+        }]).select().single();
+
+        if (error) alert('Error: ' + error.message);
+        else {
+          usuarioActual = data;
+          localStorage.setItem('topfama_user', JSON.stringify(data));
+          mostrarApp();
+        }
+      } catch (err) {
+        alert('Error: ' + err.message);
+      }
+    }
+
+    async function iniciarSesion() {
+      const nombre = document.getElementById('login-nombre').value.trim();
+      const password = document.getElementById('login-pass').value.trim();
+      const { data, error } = await db.from('perfiles').select('*').eq('nombre', nombre).eq('password', password).single();
+      if (error || !data) alert('Usuario o contraseña incorrectos.');
+      else {
+        usuarioActual = data;
+        localStorage.setItem('topfama_user', JSON.stringify(data));
+        mostrarApp();
+      }
+    }
+
+    function cerrarSesion() {
+      localStorage.removeItem('topfama_user');
+      location.reload();
+    }
+
+    function mostrarApp() {
+      ['screen-intro', 'screen-reglas', 'auth-screen'].forEach(s => document.getElementById(s).classList.add('hidden'));
+      document.getElementById('user-header').classList.remove('hidden');
+      document.getElementById('user-header').classList.add('flex');
+      document.getElementById('bottom-nav').classList.remove('hidden');
+      document.getElementById('header-username').innerText = usuarioActual.nombre;
+      document.getElementById('feed-my-avatar').src = usuarioActual.foto_perfil;
+
+      if (usuarioActual.nombre === ADMIN_USER && !document.getElementById('nav-admin')) {
+        const navContainer = document.getElementById('nav-container');
+        const adminBtn = document.createElement('button');
+        adminBtn.onclick = () => navegar('admin');
+        adminBtn.id = 'nav-admin';
+        adminBtn.className = 'nav-item flex flex-col items-center text-red-400';
+        adminBtn.innerHTML = `<i class="fa-solid fa-shield-halved text-base"></i><span class="text-[9px] mt-0.5">Admin</span>`;
+        navContainer.appendChild(adminBtn);
+      }
+      navegar('muro');
+    }
+
+    function navegar(seccion) {
+      ['muro', 'casting', 'subir', 'chat', 'admin'].forEach(s => {
+        const sec = document.getElementById(`sec-${s}`);
+        if (sec) sec.classList.add('hidden');
+        const navBtn = document.getElementById(`nav-${s}`);
+        if (navBtn) navBtn.classList.remove('active');
+      });
+      const targetSec = document.getElementById(`sec-${seccion}`);
+      if (targetSec) targetSec.classList.remove('hidden');
+      const activeBtn = document.getElementById(`nav-${seccion}`);
+      if (activeBtn) activeBtn.classList.add('active');
+
+      if (seccion === 'muro') cargarPublicaciones();
+      if (seccion === 'casting') cargarRanking();
+      if (seccion === 'chat') { cerrarVentanaChat(); cambiarTabChat('amigos'); }
+      if (seccion === 'admin' && usuarioActual.nombre === ADMIN_USER) cargarPanelAdmin();
+    }
+
+    // SISTEMA DE AMISTADES
+    async function enviarSolicitud(receptorId) {
+      await db.from('amistades').insert([{ remitente_id: usuarioActual.id, receptor_id: receptorId, estado: 'pendiente' }]);
+      alert('¡Solicitud de amistad enviada!');
+      cargarExplorar();
+    }
+
+    async function aceptarSolicitud(solicitudId) {
+      await db.from('amistades').update({ estado: 'aceptada' }).eq('id', solicitudId);
+      alert('¡Solicitud aceptada! Ya pueden chatear.');
+      cargarAmigosYSolicitudes();
+    }
+
+    async function cargarAmigosYSolicitudes() {
+      const contSol = document.getElementById('contenedor-solicitudes');
+      const contAmigos = document.getElementById('lista-amigos-chat');
+
+      const { data: solicitudes } = await db.from('amistades').select('*, remitente:perfiles!remitente_id(*)').eq('receptor_id', usuarioActual.id).eq('estado', 'pendiente');
+      
+      if (solicitudes && solicitudes.length > 0) {
+        contSol.innerHTML = `
+          <div class="bg-pink-500/10 border border-pink-500/30 p-3 rounded-2xl space-y-2">
+            <h4 class="text-xs font-bold text-pink-400">Solicitudes de amistad pendientes</h4>
+            ${solicitudes.map(s => `
+              <div class="flex items-center justify-between bg-black/40 p-2 rounded-xl text-xs">
+                <div class="flex items-center gap-2">
+                  <img src="${s.remitente.foto_perfil}" class="w-8 h-8 rounded-full object-cover">
+                  <span><b>${s.remitente.nombre}</b></span>
+                </div>
+                <button onclick="aceptarSolicitud('${s.id}')" class="gradiente-principal px-3 py-1 rounded-xl font-bold text-white text-[11px]">Aceptar</button>
+              </div>
+            `).join('')}
+          </div>`;
+      } else {
+        contSol.innerHTML = '';
+      }
+
+      const { data: am1 } = await db.from('amistades').select('*, amigo:perfiles!receptor_id(*)').eq('remitente_id', usuarioActual.id).eq('estado', 'aceptada');
+      const { data: am2 } = await db.from('amistades').select('*, amigo:perfiles!remitente_id(*)').eq('receptor_id', usuarioActual.id).eq('estado', 'aceptada');
+      const amigos = [...(am1 || []).map(x => x.amigo), ...(am2 || []).map(x => x.amigo)];
+
+      if (amigos.length === 0) {
+        contAmigos.innerHTML = `<p class="text-center text-gray-500 text-xs py-6">Aún no tienes amigos agregados. ¡Busca en la pestaña "Buscar Amigos"!</p>`;
+        return;
+      }
+
+      contAmigos.innerHTML = amigos.map(a => `
+        <div class="bg-[#141418] p-3 rounded-2xl border border-gray-800 flex items-center justify-between shadow">
+          <div class="flex items-center gap-3">
+            <img src="${a.foto_perfil}" class="w-10 h-10 rounded-full object-cover border border-pink-500">
+            <div>
+              <h4 class="font-bold text-xs">${a.nombre}, ${a.edad}</h4>
+              <p class="text-[10px] text-pink-400 font-semibold">Amigos Conectados</p>
+            </div>
+          </div>
+          <button onclick="abrirChatDirecto('${a.id}', '${a.nombre}', '${a.foto_perfil}')" class="gradiente-principal px-3 py-1.5 rounded-xl text-xs font-bold text-white">
+            <i class="fa-solid fa-comment mr-1"></i> Chatear
+          </button>
+        </div>
+      `).join('');
+    }
+
+    async function cargarExplorar() {
+      const cont = document.getElementById('lista-explorar');
+      const { data: usuarios } = await db.from('perfiles').select('*').neq('id', usuarioActual.id);
+      const { data: misAmistades } = await db.from('amistades').select('*').or(`remitente_id.eq.${usuarioActual.id},receptor_id.eq.${usuarioActual.id}`);
+
+      cont.innerHTML = (usuarios || []).map(u => {
+        const relacion = (misAmistades || []).find(f => f.remitente_id === u.id || f.receptor_id === u.id);
+        let botonEstado = `<button onclick="enviarSolicitud('${u.id}')" class="w-full gradiente-principal py-2 rounded-xl text-xs font-bold text-white shadow"><i class="fa-solid fa-user-plus mr-1"></i> Agregar</button>`;
+        
+        if (relacion) {
+          if (relacion.estado === 'aceptada') botonEstado = `<span class="block text-center text-[10px] bg-green-500/20 text-green-400 py-2 rounded-xl font-bold">Amigos 🔥</span>`;
+          else if (relacion.estado === 'pendiente') botonEstado = `<span class="block text-center text-[10px] bg-yellow-500/20 text-yellow-400 py-2 rounded-xl font-bold">Solicitud enviada</span>`;
+        }
+
+        return `
+          <div class="bg-[#141418] rounded-3xl border border-gray-800 overflow-hidden shadow-lg flex flex-col justify-between">
+            <div class="h-16 relative"><img src="${u.foto_portada}" class="w-full h-full object-cover"></div>
+            <div class="p-3 pt-0 relative">
+              <img src="${u.foto_perfil}" class="w-10 h-10 rounded-xl object-cover border-2 border-[#141418] -mt-5 shadow mb-1">
+              <h4 class="font-bold text-xs">${u.nombre}, ${u.edad}</h4>
+              <p class="text-[10px] text-gray-400 line-clamp-1 mb-2">${u.busca}</p>
+              ${botonEstado}
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    // GESTIÓN DE PUBLICACIONES Y CHAT PRIVADO
+    async function crearPublicacion() {
+      const descripcion = document.getElementById('post-desc').value.trim();
+      const file = document.getElementById('post-file').files[0];
+      const es_para_casting = document.getElementById('post-casting').checked;
+      if (!file) return alert('Selecciona una foto o video.');
+
+      try {
+        const media_url = await subirArchivoStorage(file);
+        const tipo_media = file.type.startsWith('video') ? 'video' : 'imagen';
+        await db.from('publicaciones').insert([{ usuario_id: usuarioActual.id, usuario_nombre: usuarioActual.nombre, usuario_foto: usuarioActual.foto_perfil, descripcion, media_url, tipo_media, es_para_casting }]);
+        document.getElementById('post-desc').value = '';
+        document.getElementById('post-file').value = '';
+        navegar('muro');
+      } catch (err) { alert('Error: ' + err.message); }
+    }
+
+    async function cargarPublicaciones() {
+      const cont = document.getElementById('contenedor-publicaciones');
+      const { data: posts } = await db.from('publicaciones').select('*').order('creado_en', { ascending: false });
+      const { data: comentarios } = await db.from('comentarios').select('*').order('creado_en', { ascending: true });
+
+      if (!posts || posts.length === 0) {
+        cont.innerHTML = `<div class="text-center text-gray-500 py-10 text-xs">No hay publicaciones todavía.</div>`;
+        return;
+      }
+
+      cont.innerHTML = posts.map(p => {
+        const comms = (comentarios || []).filter(c => c.publicacion_id === p.id);
+        const mediaTag = p.tipo_media === 'video' ? `<video src="${p.media_url}" controls class="w-full max-h-[420px] object-cover bg-black"></video>` : `<img src="${p.media_url}" class="w-full max-h-[420px] object-cover bg-black" loading="lazy">`;
+        const botonBorrar = (usuarioActual.nombre === ADMIN_USER || p.usuario_id === usuarioActual.id) ? `<button onclick="eliminarPublicacion('${p.id}')" class="text-xs bg-red-600/20 text-red-400 px-2 py-1 rounded-lg"><i class="fa-solid fa-trash"></i></button>` : '';
+
+        return `
+          <article class="bg-[#141418] rounded-3xl border border-gray-800 overflow-hidden shadow-lg">
+            <div class="p-3 flex items-center justify-between">
+              <div class="flex items-center gap-2.5">
+                <img src="${p.usuario_foto}" class="w-9 h-9 rounded-full object-cover border border-pink-500">
+                <div>
+                  <h4 class="text-xs font-bold">${p.usuario_nombre}</h4>
+                  ${p.es_para_casting ? '<span class="text-[9px] bg-pink-500/20 text-pink-400 px-2 py-0.5 rounded-full font-semibold">Casting VIP 🔥</span>' : ''}
+                </div>
+              </div>
+              ${botonBorrar}
+            </div>
+            ${p.descripcion ? `<p class="px-3 pb-2 text-xs text-gray-200">${p.descripcion}</p>` : ''}
+            ${mediaTag}
+            <div class="p-3 flex items-center justify-between border-b border-gray-800/80">
+              <div class="flex gap-4">
+                <button onclick="darLike('${p.id}', ${p.likes_count})" class="flex items-center gap-1 text-xs text-gray-300 hover:text-pink-500"><i class="fa-solid fa-heart text-pink-500"></i> <b>${p.likes_count || 0}</b></button>
+                ${p.es_para_casting ? `<button onclick="votarCasting('${p.id}', '${p.usuario_id}',${p.votos_count})" class="flex items-center gap-1 text-[11px] gradiente-principal px-2.5 py-1 rounded-xl font-bold"><i class="fa-solid fa-fire"></i> Votar (${p.votos_count || 0})</button>` : ''}
+              </div>
+              <span class="text-[11px] text-gray-400">${comms.length} coms</span>
+            </div>
+            <div class="p-3 space-y-2 bg-[#0e0e12]">
+              <div class="max-h-24 overflow-y-auto space-y-1">
+                ${comms.map(c => `<div class="text-[11px]"><b class="text-pink-400">${c.usuario_nombre}:</b> <span class="text-gray-300">${c.texto}</span></div>`).join('')}
+              </div>
+              <div class="flex gap-2 pt-1">
+                <input type="text" id="comm-${p.id}" placeholder="Comentar..." class="flex-1 bg-black/50 border border-gray-800 rounded-xl px-3 py-1.5 text-[11px] focus:outline-none focus:border-pink-500">
+                <button onclick="comentar('${p.id}')" class="bg-gray-800 px-3 py-1.5 rounded-xl text-[11px] font-bold text-pink-400">Enviar</button>
+              </div>
+            </div>
+          </article>
+        `;
+      }).join('');
+    }
+
+    async function eliminarPublicacion(id) {
+      if (!confirm('¿Eliminar publicación?')) return;
+      await db.from('publicaciones').delete().eq('id', id);
+      cargarPublicaciones();
+    }
+
+    async function darLike(id, actual) {
+      await db.from('publicaciones').update({ likes_count: (actual || 0) + 1 }).eq('id', id);
+      cargarPublicaciones();
+    }
+
+    async function votarCasting(postId, autorId, votosPost) {
+      await db.from('publicaciones').update({ votos_count: (votosPost || 0) + 1 }).eq('id', postId);
+      const { data: user } = await db.from('perfiles').select('votos_totales').eq('id', autorId).single();
+      if (user) await db.from('perfiles').update({ votos_totales: (user.votos_totales || 0) + 1 }).eq('id', autorId);
+      alert('¡Voto registrado! 🔥');
+      cargarPublicaciones();
+    }
+
+    async function comentar(postId) {
+      const inp = document.getElementById(`comm-${postId}`);
+      const texto = inp.value.trim();
+      if (!texto) return;
+      await db.from('comentarios').insert([{ publicacion_id: postId, usuario_nombre: usuarioActual.nombre, texto }]);
+      inp.value = '';
+      cargarPublicaciones();
+    }
+
+    async function cargarRanking() {
+      const cont = document.getElementById('contenedor-ranking');
+      const { data: usuarios } = await db.from('perfiles').select('*').order('votos_totales', { ascending: false });
+      if (!usuarios || usuarios.length === 0) return;
+
+      cont.innerHTML = usuarios.map((u, i) => `
+        <div class="bg-[#141418] rounded-3xl border border-gray-800 overflow-hidden shadow-lg">
+          <div class="h-24 relative"><img src="${u.foto_portada}" class="w-full h-full object-cover"><span class="absolute top-2 left-2 bg-black/60 px-2.5 py-0.5 rounded-full text-xs font-black text-yellow-400">#${i + 1}</span></div>
+          <div class="p-4 pt-0 relative flex justify-between items-end">
+            <div class="-mt-8 flex items-end gap-3">
+              <img src="${u.foto_perfil}" class="w-16 h-16 rounded-2xl object-cover border-4 border-[#141418] shadow">
+              <div class="mb-1"><h4 class="font-extrabold text-sm">${u.nombre}, ${u.edad}</h4><p class="text-[11px] text-pink-400 font-bold">${u.votos_totales || 0} votos 🔥</p></div>
+            </div>
+            <button onclick="votarDirectoPerfil('${u.id}', ${u.votos_totales})" class="gradiente-principal px-3 py-1.5 rounded-xl text-xs font-bold shadow mb-1">Votar</button>
+          </div>
+          <p class="px-4 pb-3 text-xs text-gray-400 border-t border-gray-800 pt-2"><i class="fa-solid fa-quote-left text-pink-500 mr-1"></i> ${u.bio}</p>
+        </div>
+      `).join('');
+    }
+
+    async function votarDirectoPerfil(uid, actuales) {
+      await db.from('perfiles').update({ votos_totales: (actuales || 0) + 1 }).eq('id', uid);
+      cargarRanking();
+    }
+
+    function abrirChatDirecto(id, nombre, foto) {
+      document.getElementById('vista-amigos').classList.add('hidden');
+      document.getElementById('ventana-chat').classList.remove('hidden');
+      chatReceptor = { id, nombre, foto };
+      document.getElementById('chat-receptor-nombre').innerText = nombre;
+      document.getElementById('chat-receptor-foto').src = foto;
+      cargarMensajes();
+      if (intervaloChat) clearInterval(intervaloChat);
+      intervaloChat = setInterval(cargarMensajes, 3000);
+    }
+
+    function cerrarVentanaChat() {
+      chatReceptor = null;
+      if (intervaloChat) clearInterval(intervaloChat);
+      document.getElementById('ventana-chat').classList.add('hidden');
+      document.getElementById('vista-amigos').classList.remove('hidden');
+      cargarAmigosYSolicitudes();
+    }
+
+    async function cargarMensajes() {
+      if (!chatReceptor) return;
+      const { data: msgs } = await db.from('mensajes').select('*').or(`and(emisor_id.eq.${usuarioActual.id},receptor_id.eq.${chatReceptor.id}),and(emisor_id.eq.${chatReceptor.id},receptor_id.eq.${usuarioActual.id})`).order('creado_en', { ascending: true });
+      const caja = document.getElementById('caja-mensajes');
+      if (!msgs || msgs.length === 0) {
+        caja.innerHTML = `<p class="text-center text-gray-500 text-xs my-auto">Inicia la conversación 🔥</p>`;
+        return;
+      }
+      caja.innerHTML = msgs.map(m => {
+        const esMio = m.emisor_id === usuarioActual.id;
+        return `<div class="max-w-[78%] px-3.5 py-2 rounded-2xl text-xs ${esMio ? 'gradiente-principal text-white self-end rounded-br-none shadow' : 'bg-gray-800 text-gray-200 self-start rounded-bl-none'}">${m.mensaje}</div>`;
+      }).join('');
+      caja.scrollTop = caja.scrollHeight;
+    }
+
+    async function enviarMensaje() {
+      const inp = document.getElementById('input-mensaje');
+      const texto = inp.value.trim();
+      if (!texto || !chatReceptor) return;
+      inp.value = '';
+      await db.from('mensajes').insert([{ emisor_id: usuarioActual.id, emisor_nombre: usuarioActual.nombre, receptor_id: chatReceptor.id, mensaje: texto }]);
+      cargarMensajes();
+    }
+
+    async function cargarPanelAdmin() {
+      const { data: usuarios } = await db.from('perfiles').select('*');
+      const { data: posts } = await db.from('publicaciones').select('*');
+      document.getElementById('admin-lista-usuarios').innerHTML = (usuarios || []).map(u => `<div class="flex justify-between bg-black/40 p-2 rounded-xl text-xs"><span><b>${u.nombre}</b></span>${u.nombre !== ADMIN_USER ? `<button onclick="eliminarUsuario('${u.id}')" class="bg-red-600/20 text-red-400 px-2 py-1 rounded">Borrar</button>` : '<span class="text-green-400">Admin</span>'}</div>`).join('');
+      document.getElementById('admin-lista-posts').innerHTML = (posts || []).map(p => `<div class="flex justify-between bg-black/40 p-2 rounded-xl text-xs"><span class="truncate max-w-[180px]">${p.usuario_nombre}: ${p.descripcion || 'Media'}</span><button onclick="eliminarPublicacion('${p.id}')" class="bg-red-600/20 text-red-400 px-2 py-1 rounded">Borrar</button></div>`).join('');
+    }
+
+    async function eliminarUsuario(id) {
+      if (!confirm('¿Eliminar usuario?')) return;
+      await db.from('perfiles').delete().eq('id', id);
+      cargarPanelAdmin();
+    }
+  </script>
+</body>
+</html>
